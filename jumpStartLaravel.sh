@@ -49,7 +49,7 @@ else
 fi
 
 #git initialization
-echo "Do you want to initialze e git repository for this project? [yes, default:no]"
+echo "Do you want to initialze a git repository for this project? [yes, default:no]"
 read initializeGitRepo;
 
 if [ "$initializeGitRepo" == "yes" ] || [ "$initializeGitRepo" == "y" ]; then
@@ -60,7 +60,7 @@ if [ "$initializeGitRepo" == "yes" ] || [ "$initializeGitRepo" == "y" ]; then
 
     if [ "$externalRepoAddress" == "yes" ] || [ "$externalRepoAddress" == "y" ]; then
         echo "Enter the origin repository address: "
-        read originRepoAdrress
+        read originRepoAdrress;
         git remote add origin "$originRepoAdrress"
     fi
     #.gitignore autodownload from github download .gitingnore from here:
@@ -68,11 +68,66 @@ if [ "$initializeGitRepo" == "yes" ] || [ "$initializeGitRepo" == "y" ]; then
     echo "The .gitignore file will be downloaded from the official Laravel GitHub repository and put in the git root of your project"
     read setupGitIgnore
     if [ "$setupGitIgnore" == "yes" ] || [ "$setupGitIgnore" == "y" ]; then
-        curl -o .gitignore https://raw.githubusercontent.com/laravel/laravel/master/.gitignore
+    curl -o .gitignore https://raw.githubusercontent.com/laravel/laravel/master/.gitignore;
     fi
 else
     echo "No git repo added"
 fi
 
 #setup homestead machine for the new site
+echo "Do you want to add the laravel app to the Homestead yaml configuration? [yes, default:no]"
+read addSiteToHomesteadConfig;
+
+if [ "$addSiteToHomesteadConfig" == "yes" ] || [ "$addSiteToHomesteadConfig" == "y" ]; then
+    #TODO: i can read also the configuration to get the root path and add the one of the project...
+
+    #ask for the path to your homestead Folder...
+    echo "Enter the location of your Homestead root folder: [default: ../../]"
+    echo "Just the path to the folder do not enter the folder name (Homestead)"
+    read homesteadRootPath;
+    if [ "$homesteadRootPath" == "" ]; then
+        homesteadRootPath="../../"
+    fi
+
+    #ask for the local address to use
+    echo "Enter the loca address to use (i.e.: example.loc): "
+    read mapLocalAddress;
+
+    #ask for the vagrant path to map this local address
+    echo "Enter the path that has to be mapped to this address: "
+    read toPath;
+
+    #this add the site to the conf, it can be done in a more elegant way, but this works...
+    cd "$homesteadRootPath"/Homestead
+    mv Homestead.yaml homestead.bk
+    sed '/^'sites'/,/^[{space,tab}]*$/{  # [{space,tab}]
+    /'sites:'/ {
+            a\
+            \    - map: "$mapLocalAddress
+            a\
+            \      to: "$toPath"
+        }
+    }' <homestead.bk > Homestead.yaml
+    rm homestead.bk
+
+    echo "Site added to the Homestead configuration"
+
+    #add the local address to the /etc/hosts file
+    sudo -- sh -c "echo 127.0.0.1   $mapLocalAddress >> /etc/hosts";
+
+    echo "/etc/hosts updated with $mapLocalAddress"
+else
+    echo "No Homestead site setup";
+fi
+
+echo "Done."
+
+
+
+
+
+
+
+
+
 
