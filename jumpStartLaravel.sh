@@ -8,8 +8,8 @@
 #   - curl
 #   - homestead
 #
-#  Created by Dac on 27/09/14.
-#  Updated by Dac on 29/09/14.
+#  Created by ilDac on 27/09/14.
+#  Updated by ilDac on 29/09/14.
 #
 
 #if no project name is specified, composer will use the default project name "laravel"
@@ -23,9 +23,11 @@ done
 echo "Initializating the project via Composer"
 composer create-project laravel/laravel $projectName
 
+cd "$projectName"
+
 #configure permissions on folder
 echo "Granting write permissions to app/storage"
-chmod -R 0777 $projectName/app/storage
+chmod -R 0777 app/storage
 
 #setup a local environment?
 echo "Do you want to setup a local environment for testing?[yes,default:no]"
@@ -46,11 +48,10 @@ else
 fi
 
 #git initialization
-echo "Do you want to initialze e git repository for this project?"
+echo "Do you want to initialze e git repository for this project? [yes, default:no]"
 read initializeGitRepo;
 
 if [ "$initializeGitRepo" == "yes" ] || [ "$initializeGitRepo" == "y" ]; then
-    cd "$projectName"
     git init
     #add external repository for the project (like bitbucket or github)?
     echo "add external repository for the project (like bitbucket or github)? [yes, default:no]"
