@@ -39,7 +39,8 @@ if [ "$localEvironment" == "yes" ] || [ "$localEvironment" == "y" ]; then
     read machineName;
 
     if ([ "$machineName" != "homestead" ] && [ "$machineName" != "" ]); then
-        find bootstrap -name 'start.php' -exec sed -i '' -e 's/your-machine-name/$machineName/g' {} \; && echo "Local environment name set to $machineName"
+        find bootstrap -name 'start.php' -exec sed -i '' -e 's/homestead/'"$machineName"'/g' {} \;
+        echo "Local environment name set to $machineName"
     else
         echo "The default setings are enough for you"
     fi
