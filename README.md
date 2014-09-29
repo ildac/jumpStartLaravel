@@ -47,4 +47,4 @@ chmod +x jumpStartLaravel.sh
 <i>Inspired by: </i>
 - [Rapid Laravel configuration](http://fideloper.com/laravel-4-uber-quick-start-with-auth-guide)
 - [Regular Expression to modify the configuration file](http://stackoverflow.com/a/5723884/811858)
-
+- [How to append a line to hosts file without opening it](http://superuser.com/a/538763)
