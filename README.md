@@ -25,16 +25,16 @@ Usage
 
 Just point your terminal in the folder where you want to put the root of the project, and type:
 
-‘‘‘
+```
 jumpStartLaravel.sh -n "projectName"
-‘‘‘
+```
 
 Installation
 ------------
 
 Just clone this repo on your machine, give it the execution rights with this command:
 
-‘‘‘
+```
 chmod +x jumpStartLaravel.sh
-‘‘‘
+```
 
