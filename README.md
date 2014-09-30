@@ -50,6 +50,11 @@ Just clone this repo on your machine and give the execution rights to the script
 chmod +x jumpStartLaravel.sh
 ```
 
+Note
+----
+
+This script is taylored on a standard homestead setup proposed by [this tutorial on Scotch.io](http://scotch.io/tutorials/php/getting-started-with-laravel-homestead), if your configuration is different the Homestead auto configuration cannot work correctly
+
 <i>Inspired by: </i>
 - [Rapid Laravel configuration](http://fideloper.com/laravel-4-uber-quick-start-with-auth-guide)
 - [Regular Expression to modify the configuration file](http://stackoverflow.com/a/5723884/811858)
