@@ -3,10 +3,10 @@ jumpStartLaravel
 
 An interactive script that does for you the most common operation when setting up a new Laravel project.
 The requirements to run the script are:
-    - composer
-    - git
-    - curl
-    - homestead
+- composer
+- git
+- curl
+- homestead
 
 <i>Tested on OsX Mavericks 10.9</i>
 
@@ -23,7 +23,6 @@ What it does
 
 What it will do
 ---------------
-- <b>[TODO]</b> Substitute the question (yes/no) with command option
 - <b>[TODO]</b> Fancy and coloured terminal styling
 
 Usage
@@ -32,13 +31,20 @@ Usage
 Just point your terminal in the folder where you want to put the root of the project, and type:
 
 ```
-jumpStartLaravel.sh -n "projectName"
+jumpStartLaravel.sh -gih -o http://git.your.repo/address -l homestead  <projectName>
 ```
+
+Options
+- -g: initialize the git repository
+- -o: to set the remote repo address (without this no remote repository will be set)
+- -i: download the .gitignore file in the directory
+- -h: add a new site in the Homestead configuration
+- -l <localMachineName>: setup the laravel local environment, by default localMachineName is set to "homestead" that is the default one 
 
 Installation
 ------------
 
-Just clone this repo on your machine, give it the execution rights with this command:
+Just clone this repo on your machine and give the execution rights to the script with this command:
 
 ```
 chmod +x jumpStartLaravel.sh

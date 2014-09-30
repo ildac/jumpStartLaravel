@@ -7,17 +7,53 @@
 #   - git
 #   - curl
 #   - homestead
+#  Usage:
+#	jumpStartLaravel.sh -gih -o http://git.your.repo/address -l homestead  <projectName>
+#  Options:
+#	- -g: initialize the git repository
+#	- -o: to set the remote repo address (without this no remote repository will be set)
+# 	- -i: download the .gitignore file in the directory
+#	- -h: add a new site in the Homestead configuration
+#	- -l <localMachineName>: setup the laravel local environment, by default localMachineName is set to "homestead" that is the default one 
 #
 #  Created by ilDac on 27/09/14.
-#  Updated by ilDac on 29/09/14.
+#  Updated by ilDac on 30/09/14.
 #
 
-#if no project name is specified, composer will use the default project name "laravel"
-while getopts "n:" flag
-do
-    projectName=$OPTARG
-done
+# initialization
+initializeGitRepo="no"
+externalRepoAddress="no"
+setupGitIgnore="no"
+addSiteToHomesteadConfig="no"
+localEvironment="no"
+machineName="homestead"
 
+#if no project name is specified, composer will use the default project name "laravel"
+while getopts "gihl:o:" flag
+do
+	case $flag in
+		g)
+			initializeGitRepo="yes"
+		;;
+		o)
+			externalRepoAddress="yes"
+			originRepoAddress=$OPTARG
+		;;
+		i)
+			setupGitIgnore="yes"
+		;;
+		h)
+			addSiteToHomesteadConfig="yes"
+		;;
+		l)
+			localEvironment="yes"
+			if [ "$OPTARG" != "" ]; then
+				machineName=$OPTARG
+			fi
+		;;
+	esac
+done
+projectName=$1
 
 #create the new project with composer
 echo "Initializating the project via Composer"
@@ -30,54 +66,32 @@ echo "Granting write permissions to app/storage"
 chmod -R 0777 app/storage
 
 #setup a local environment?
-echo "Do you want to setup a local environment for testing?[yes,default:no]"
-read localEvironment
-
 if [ "$localEvironment" == "yes" ] || [ "$localEvironment" == "y" ]; then
-    echo "Which is the name of your machine?[default:homestead]";
-    echo "If you are using vagrant/homestead and you did not change the default machine name, just hit enter";
-    read machineName;
-
-    if ([ "$machineName" != "homestead" ] && [ "$machineName" != "" ]); then
-        find bootstrap -name 'start.php' -exec sed -i '' -e 's/homestead/'"$machineName"'/g' {} \;
-        echo "Local environment name set to $machineName"
-    else
-        echo "The default setings are enough for you"
+	echo "Setting up Laravel local environment"
+    if ([ "$localMachineName" != "homestead" ] && [ "$localMachineName" != "" ]); then
+        find bootstrap -name 'start.php' -exec sed -i '' -e 's/homestead/'"$localMachineName"'/g' {} \;
+        echo "Local environment name set to $localMachineName"
     fi
-else
-    echo "Skipping local environment configuration";
 fi
 
 #git initialization
-echo "Do you want to initialze a git repository for this project? [yes, default:no]"
-read initializeGitRepo;
-
 if [ "$initializeGitRepo" == "yes" ] || [ "$initializeGitRepo" == "y" ]; then
     git init
+	echo "Git repository initialized in the project root"
     #add external repository for the project (like bitbucket or github)?
-    echo "add external repository for the project (like bitbucket or github)? [yes, default:no]"
-    read externalRepoAddress
-
     if [ "$externalRepoAddress" == "yes" ] || [ "$externalRepoAddress" == "y" ]; then
-        echo "Enter the origin repository address: "
-        read originRepoAdrress;
-        git remote add origin "$originRepoAdrress"
+        git remote add origin "$originRepoAddress"
+		echo "Added remote repository origin: $originRepoAddress"
     fi
     #.gitignore autodownload from github download .gitingnore from here:
-    echo "Do you want to auto setup the laravel optimized git ignore file? [yes, default:no]"
-    echo "The .gitignore file will be downloaded from the official Laravel GitHub repository and put in the git root of your project"
-    read setupGitIgnore
     if [ "$setupGitIgnore" == "yes" ] || [ "$setupGitIgnore" == "y" ]; then
-    curl -o .gitignore https://raw.githubusercontent.com/laravel/laravel/master/.gitignore;
+		echo "Downloading the .gitignore from the official Laravel repository"
+		curl -o .gitignore https://raw.githubusercontent.com/laravel/laravel/master/.gitignore;
+		echo ".gitignore added in your project root"
     fi
-else
-    echo "No git repo added"
 fi
 
 #setup homestead machine for the new site
-echo "Do you want to add the laravel app to the Homestead yaml configuration? [yes, default:no]"
-read addSiteToHomesteadConfig;
-
 if [ "$addSiteToHomesteadConfig" == "yes" ] || [ "$addSiteToHomesteadConfig" == "y" ]; then
     #TODO: i can read also the configuration to get the root path and add the one of the project...
 
@@ -109,18 +123,16 @@ if [ "$addSiteToHomesteadConfig" == "yes" ] || [ "$addSiteToHomesteadConfig" == 
         }
     }' <homestead.bk > Homestead.yaml
     rm homestead.bk
-
     echo "Site added to the Homestead configuration"
 
     #add the local address to the /etc/hosts file
     sudo -- sh -c "echo 127.0.0.1   $mapLocalAddress >> /etc/hosts";
-
     echo "/etc/hosts updated with $mapLocalAddress"
 else
     echo "No Homestead site setup";
 fi
 
-echo "Done."
+echo "Done. What are you waiting for...start working!"
 
 
 
