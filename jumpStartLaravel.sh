@@ -26,7 +26,7 @@ externalRepoAddress="no"
 setupGitIgnore="no"
 addSiteToHomesteadConfig="no"
 localEvironment="no"
-machineName="homestead"
+localMachineName="homestead"
 
 #if no project name is specified, composer will use the default project name "laravel"
 while getopts "gihl:o:" flag
@@ -48,12 +48,18 @@ do
 		l)
 			localEvironment="yes"
 			if [ "$OPTARG" != "" ]; then
-				machineName=$OPTARG
+				localMachineName=$OPTARG
 			fi
+		;;
+		\?)
+		echo "Invalid option: -$OPTARG" >&2
+		exit 1
 		;;
 	esac
 done
-projectName=$1
+
+#project name is always the last argument passed to the script
+projectName="${@: -1}"
 
 #create the new project with composer
 echo "Initializating the project via Composer"
@@ -104,7 +110,7 @@ if [ "$addSiteToHomesteadConfig" == "yes" ] || [ "$addSiteToHomesteadConfig" == 
     fi
 
     #ask for the local address to use
-    echo "Enter the loca address to use (i.e.: example.loc): "
+    echo "Enter the local address to use (i.e.: example.loc): "
     read mapLocalAddress;
 
     #ask for the vagrant path to map this local address
@@ -117,15 +123,16 @@ if [ "$addSiteToHomesteadConfig" == "yes" ] || [ "$addSiteToHomesteadConfig" == 
     sed '/^'sites'/,/^[{space,tab}]*$/{  # [{space,tab}]
     /'sites:'/ {
             a\
-            \    - map: "$mapLocalAddress
+            \    - map: '"$mapLocalAddress"'
             a\
-            \      to: "$toPath"
+            \      to: '"$toPath"'
         }
     }' <homestead.bk > Homestead.yaml
     rm homestead.bk
     echo "Site added to the Homestead configuration"
 
     #add the local address to the /etc/hosts file
+	echo "Adding the local address to your /etc/hosts file (can require the sudo password)"
     sudo -- sh -c "echo 127.0.0.1   $mapLocalAddress >> /etc/hosts";
     echo "/etc/hosts updated with $mapLocalAddress"
 else
@@ -133,13 +140,3 @@ else
 fi
 
 echo "Done. What are you waiting for...start working!"
-
-
-
-
-
-
-
-
-
-

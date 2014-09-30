@@ -59,3 +59,4 @@ This script is taylored on a standard homestead setup proposed by [this tutorial
 - [Rapid Laravel configuration](http://fideloper.com/laravel-4-uber-quick-start-with-auth-guide)
 - [Regular Expression to modify the configuration file](http://stackoverflow.com/a/5723884/811858)
 - [How to append a line to hosts file without opening it](http://superuser.com/a/538763)
+- [Manage argument passed to a bash script](http://stackoverflow.com/a/1854031/811858)
